@@ -1,0 +1,187 @@
+openapi: 3.0.0
+info:
+  title: Surgery API
+  version: '1.0'
+  description: A simple API to consulting surgery information.
+  contact:
+    name: Rogério R. Leal
+    email: rogerio.leal@santacasa.org.br
+servers:
+  - url: 'https://megical.santacasa.org.br/api/v1.0'
+tags:
+  - name: Surgery
+paths:
+  '/surgeries/{admission_id}':
+    parameters:
+      - schema:
+          type: number
+        name: admission_id
+        in: path
+        required: true
+        description: Identification of patient admission
+    get:
+      summary: Get surgeries from admission ID
+      operationId: get-surgeries
+      description: Returns all surgeries linked to the admission ID.
+      security:
+        - OAuth: []
+      parameters:
+        - schema:
+            type: string
+            default: application/json
+          in: header
+          name: Content-type
+          required: true
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          description: Bearer token
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        surgery_id:
+                          type: number
+                        admission_id:
+                          type: number
+                        expected_start_date:
+                          type: string
+                          format: date-time
+                        real_start_date:
+                          type: string
+                          format: date-time
+                        expected_end_date:
+                          type: string
+                          format: date-time
+                        real_end_date:
+                          type: string
+                          format: date-time
+                      required:
+                        - surgery_id
+                        - admission_id
+                        - expected_start_date
+                        - real_start_date
+                        - expected_end_date
+                        - real_end_date
+                  status:
+                    type: number
+                required:
+                  - data
+                  - status
+              examples:
+                Example:
+                  value:
+                    data:
+                      - surgery_id: 526970
+                        admission_id: 12107315
+                        expected_start_date: '2019-11-05 16:15:00'
+                        real_start_date: '2019-11-05 16:15:00'
+                        expected_end_date: '2019-11-05 17:00:00'
+                        real_end_date: '2019-11-05 17:00:00'
+                      - surgery_id: 528724
+                        admission_id: 12107315
+                        expected_start_date: '2019-11-12 08:00:00'
+                        real_start_date: '2019-11-12 08:15:00'
+                        expected_end_date: '2019-11-12 10:00:00'
+                        real_end_date: '2019-11-12 09:00:00'
+                      - surgery_id: 529858
+                        admission_id: 12107315
+                        expected_start_date: '2019-11-16 09:00:00'
+                        real_start_date: '2019-11-16 09:07:08'
+                        expected_end_date: '2019-11-16 10:07:08'
+                        real_end_date: '2019-11-16 10:08:00'
+                      - surgery_id: 530141
+                        admission_id: 12107315
+                        expected_start_date: '2019-11-18 15:00:00'
+                        real_start_date: '2019-11-18 16:00:00'
+                        expected_end_date: '2019-11-18 17:45:00'
+                        real_end_date: '2019-11-18 17:15:00'
+                      - surgery_id: 530476
+                        admission_id: 12107315
+                        expected_start_date: '2019-11-19 11:00:00'
+                        real_start_date: '2019-11-19 10:20:00'
+                        expected_end_date: '2019-11-19 10:50:00'
+                        real_end_date: '2019-11-19 10:50:00'
+                      - surgery_id: 530552
+                        admission_id: 12107315
+                        expected_start_date: '2019-11-19 18:00:00'
+                        real_start_date: '2019-11-19 17:30:00'
+                        expected_end_date: '2019-11-19 19:15:00'
+                        real_end_date: '2019-11-19 18:10:00'
+                      - surgery_id: 529831
+                        admission_id: 12107315
+                        expected_start_date: '2019-11-15 09:00:00'
+                        real_start_date: null
+                        expected_end_date: null
+                        real_end_date: null
+                      - surgery_id: 531216
+                        admission_id: 12107315
+                        expected_start_date: '2019-11-22 14:00:00'
+                        real_start_date: null
+                        expected_end_date: null
+                        real_end_date: null
+                    status: 200
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              examples:
+                Example:
+                  value:
+                    message: Not found
+        '422':
+          description: Unprocessable Entity
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: object
+                    properties:
+                      admission_id:
+                        type: array
+                        items: {}
+              examples:
+                Invalid admission ID:
+                  value:
+                    message: The given data was invalid.
+                    errors:
+                      admission_id:
+                        - The selected admission id is invalid.
+                Invalid data type:
+                  value:
+                    message: The given data was invalid.
+                    errors:
+                      admission_id:
+                        - The admission id must be an integer.
+      tags:
+        - Surgery
+components:
+  securitySchemes:
+    OAuth:
+      type: oauth2
+      flows:
+        clientCredentials:
+          tokenUrl: 'https://megical.santacasa.org.br/oauth/token'
+          refreshUrl: ''
+          scopes: {}
+      description: Get a access token
