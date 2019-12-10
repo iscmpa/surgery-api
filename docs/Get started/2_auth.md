@@ -2,7 +2,7 @@
 tags: [login, access token, authentication]
 ---
 
-# Get Access Token
+# Authentication
 
 This API follows the standard protocol OAuth2 for authentication.
 For more information on how to generate an access token see: [OAuth2 - Client Credentials](https://www.oauth.com/oauth2-servers/access-tokens/client-credentials/)
